@@ -1,0 +1,197 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card">
+  <h2>Live Sensor</h2>
+  <div class="badge" style="font-size:1.1em;margin-bottom:8px;background:#e8f5e9;color:#222;">
+    Live Status: <span id="live_status">—</span>
+  </div>
+  <div id="live" class="inline">
+    <div class="badge">Temperature: <span id="temp">—</span> °C</div>
+    <div class="badge">Humidity: <span id="hum">—</span> %</div>
+    <div class="badge">Gas: <span id="gas">—</span></div>
+    <div style="margin-left:auto;">Last: <span id="last_ts">—</span></div>
+  </div>
+  <div style="margin-top:12px;">
+    <div style="margin-top:10px">
+      <label for="manualConditions"><strong>Manual health conditions / disease (optional):</strong></label>
+      <textarea id="manualConditions" rows="2" style="width:100%;max-width:640px;margin-top:6px;" placeholder="e.g. Asthma, COPD, Pregnancy"></textarea>
+      <button class="btn" id="runManualAnalysis" style="margin-top:6px">Run Analysis with Manual Conditions</button>
+    </div>
+    <small style="display:block; margin-top:6px; color:#555;">
+      Analysis will store a non-prescriptive advisory in your account. This is not a medical prescription.
+    </small>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Recent Analyses</h3>
+  <div id="analysesList">
+    {% if records and records|length > 0 %}
+      <table>
+        <thead><tr><th>When</th><th>Values</th><th>AI Response</th></tr></thead>
+        <tbody>
+        {% for a in records %}
+          <tr>
+            <td>{{ a[5] }}</td>
+            <td>Disease/Status: {{ a[0] }}<br>Temp: {{ a[1] }} | Hum: {{ a[2] }} | Gas: {{ a[3] }}</td>
+            <td style="max-width:480px;"><pre style="white-space:pre-wrap;">{{ a[4] }}</pre></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No analyses yet. Run an analysis to create one.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <h3>Recent Sensor Log</h3>
+  {% if sensor_data %}
+    <table>
+      <thead><tr><th>Timestamp</th><th>Data</th></tr></thead>
+      <tbody>
+        {% for r in sensor_data %}
+          <tr><td>{{ r.timestamp }}</td><td>
+            {% for k,v in r.items() %}
+              {% if k != 'timestamp' %} <strong>{{k}}:</strong> {{v}} &nbsp; {% endif %}
+            {% endfor %}
+          </td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No log entries yet.</p>
+  {% endif %}
+</div>
+
+<script>
+async function fetchData(){
+  try {
+    const resp = await fetch('/api/data');
+    if (!resp.ok) {
+      if (resp.status === 401) {
+        // not authenticated — redirect to login
+        window.location = '/login';
+        return;
+      }
+      const txt = await resp.text();
+      console.error('Error fetching /api/data:', txt);
+      return;
+    }
+    const ctype = (resp.headers.get('content-type') || '');
+    if (!ctype.includes('application/json')) {
+      const txt = await resp.text();
+      console.error('Unexpected /api/data response:', txt);
+      return;
+    }
+    const j = await resp.json();
+    const latest = j.latest || {};
+    document.getElementById('temp').textContent = latest.Temperature ?? '—';
+    document.getElementById('hum').textContent = latest.Humidity ?? '—';
+    document.getElementById('gas').textContent = latest.Gas ?? '—';
+    document.getElementById('last_ts').textContent = latest.timestamp ?? '—';
+    // Show live status based on gas value
+    let status = '—';
+    if (typeof latest.Gas === 'number') {
+      if (latest.Gas >= 180 && latest.Gas < 380) status = 'safe';
+      else if (latest.Gas >= 380 && latest.Gas <= 1024) status = 'unsafe';
+      else status = 'normal';
+    } else if (latest.Status) {
+      status = latest.Status === 'unknown' ? 'normal' : latest.Status;
+    }
+    document.getElementById('live_status').textContent = status;
+  } catch (e) {
+    console.error('fetchData error', e);
+  }
+}
+
+const runAnalysisBtn = document.getElementById('runAnalysis');
+if (runAnalysisBtn) {
+  runAnalysisBtn.addEventListener('click', async () => {
+    runAnalysisBtn.textContent = 'Running...';
+    try {
+      const resp = await fetch('/api/analyze', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({}) });
+      if (!resp.ok) {
+        // handle auth redirect or server HTML error
+        if (resp.status === 401) {
+          alert('Not authenticated. Please log in.');
+          window.location = '/login';
+          return;
+        }
+        const txt = await resp.text();
+        // try to parse JSON error
+        try {
+          const err = JSON.parse(txt);
+          alert('Error: ' + (err.error || JSON.stringify(err)));
+        } catch (e) {
+          alert('Server error: ' + txt);
+        }
+        return;
+      }
+      const ctype = (resp.headers.get('content-type') || '');
+      let j = null;
+      if (ctype.includes('application/json')) {
+        j = await resp.json();
+      } else {
+        // response isn't JSON (maybe HTML) — read text for debugging
+        const txt = await resp.text();
+        alert('Unexpected response from server:\n' + txt);
+        return;
+      }
+      if (j.error) {
+        alert('Error: ' + j.error);
+      } else {
+        alert('Analysis completed and saved.');
+        location.reload();
+      }
+    } catch(e) {
+      alert('Request failed: ' + e);
+    } finally {
+      runAnalysisBtn.textContent = 'Run Analysis (AI-assisted)';
+    }
+  });
+}
+
+const manualBtn = document.getElementById('runManualAnalysis');
+const manualBox = document.getElementById('manualConditions');
+if (manualBtn && manualBox) {
+  manualBtn.addEventListener('click', async () => {
+    manualBtn.textContent = 'Running...';
+    try {
+      const manual = manualBox.value.trim();
+      const resp = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({disease: manual})
+      });
+      if (!resp.ok) {
+        const txt = await resp.text();
+        alert('Error: ' + (txt || resp.status));
+        return;
+      }
+      const ctype = (resp.headers.get('content-type') || '');
+      if (!ctype.includes('application/json')) {
+        const txt = await resp.text();
+        alert('Unexpected response: ' + txt);
+        return;
+      }
+      const data = await resp.json();
+      if (data && data.result) {
+        alert('Analysis completed: ' + data.result);
+        location.reload();
+      } else {
+        alert('No result');
+      }
+    } catch (e) {
+      alert('Request failed: ' + e);
+    } finally {
+      manualBtn.textContent = 'Run Analysis with Manual Conditions';
+    }
+  });
+}
+// poll for live values every 5 seconds
+fetchData();
+setInterval(fetchData, 5000);
+</script>
+{% endblock %}

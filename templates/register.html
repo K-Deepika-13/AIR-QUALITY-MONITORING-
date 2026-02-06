@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Air Quality Monitor</title>
+  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3a0ca3;
+      --accent-color: #4cc9f0;
+      --success-color: #4ade80;
+      --warning-color: #f59e0b;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7ff 0%, #eef1f9 100%);
+      color: var(--dark-color);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      font-size: 1.8rem;
+    }
+
+    .register-container {
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .register-card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: var(--card-shadow);
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .register-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--gradient);
+    }
+
+    .app-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .app-logo-icon {
+      font-size: 3.2rem;
+      color: var(--primary-color);
+      margin-right: 1rem;
+    }
+
+    .app-logo-text {
+      font-weight: 700;
+      font-size: 2.4rem;
+      color: var(--dark-color);
+    }
+
+    .welcome-text {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .welcome-text h2 {
+      font-weight: 600;
+      font-size: 2.8rem;
+      margin-bottom: 0.75rem;
+      color: var(--dark-color);
+    }
+
+    .welcome-text p {
+      color: #6c757d;
+      font-size: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .form-label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #495057;
+      display: flex;
+      align-items: center;
+      font-size: 1.4rem;
+    }
+
+    .form-label i {
+      margin-right: 0.75rem;
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .form-control {
+      padding: 1rem 1.25rem 1rem 3.25rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: 1.3rem;
+      transition: all 0.3s ease;
+      background-color: #f8fafc;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+      background-color: white;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      z-index: 5;
+      font-size: 1.5rem;
+    }
+
+    .btn {
+      border-radius: 16px;
+      font-weight: 600;
+      padding: 1rem 1.75rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+      font-size: 1.3rem;
+    }
+
+    .btn-success {
+      background: var(--success-color);
+      border: none;
+      font-size: 1.3rem;
+      padding: 1rem;
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(74, 222, 128, 0.25);
+      background: #22c55e;
+    }
+
+    .btn-outline-primary {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .btn-outline-primary:hover {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+
+    .btn-sm {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    .btn-warning {
+      background-color: var(--warning-color);
+      border-color: var(--warning-color);
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background-color: #eab308;
+      border-color: #eab308;
+      color: white;
+    }
+
+    .btn-danger {
+      background-color: #ef4444;
+      border-color: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #dc2626;
+      border-color: #dc2626;
+      color: white;
+    }
+
+    .btn i {
+      font-size: 1.5rem;
+      margin-right: 0.75rem;
+    }
+
+    .alert {
+      border-radius: 12px;
+      border: none;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .alert-warning {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: #d97706;
+      border-left: 4px solid var(--warning-color);
+    }
+
+    .disease-section {
+      background-color: #f8fafc;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1.5px dashed #cbd5e1;
+    }
+
+    .disease-section p {
+      font-size: 1rem;
+    }
+
+    .disease-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .disease-header i {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-right: 0.75rem;
+    }
+
+    .disease-header h5 {
+      margin: 0;
+      color: var(--dark-color);
+    }
+
+    .disease-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      padding: 0.5rem;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .disease-item input {
+      flex: 1;
+      border: none;
+      padding: 0.5rem;
+      background: transparent;
+      font-size: 0.95rem;
+    }
+
+    .disease-item input:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    .disease-count {
+      font-size: 0.875rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+      text-align: right;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .login-link a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.3s ease;
+      font-size: 1rem;
+      gap: 0.35rem;
+    }
+
+    .login-link a:hover {
+      color: var(--secondary-color);
+    }
+
+    .login-link i {
+      margin-right: 0;
+      font-size: 1.15rem;
+    }
+
+    /* Animation for form elements */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .delay-1 {
+      animation-delay: 0.1s;
+    }
+
+    .delay-2 {
+      animation-delay: 0.2s;
+    }
+
+    .delay-3 {
+      animation-delay: 0.3s;
+    }
+
+    .delay-4 {
+      animation-delay: 0.4s;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+      .register-card {
+        padding: 2rem 1.5rem;
+      }
+      
+      .disease-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+      }
+      
+      .disease-buttons {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <div class="register-card">
+      <div class="app-logo animate-fade-in">
+        <i class="bi bi-wind app-logo-icon"></i>
+        <span class="app-logo-text">MYAIRCARE</span>
+      </div>
+
+      <div class="welcome-text animate-fade-in delay-1">
+        <h2>Create Your Account</h2>
+        <p>Join us to monitor your environment's air quality</p>
+      </div>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="alert alert-warning animate-fade-in delay-1">
+            {% for msg in messages %}
+              <p class="mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i>{{ msg }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form method="post" id="registerForm">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group animate-fade-in delay-2">
+              <label class="form-label">
+                <i class="bi bi-person"></i> Username
+              </label>
+              <div class="input-group">
+                <i class="bi bi-person input-icon"></i>
+                <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group animate-fade-in delay-2">
+              <label class="form-label">
+                <i class="bi bi-envelope"></i> Email
+              </label>
+              <div class="input-group">
+                <i class="bi bi-envelope input-icon"></i>
+                <input type="email" name="email" class="form-control" placeholder="Enter email" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group animate-fade-in delay-2">
+          <label class="form-label">
+            <i class="bi bi-calendar"></i> Age
+          </label>
+          <div class="input-group">
+            <i class="bi bi-calendar input-icon"></i>
+            <input type="number" name="age" class="form-control" min="1" max="120" placeholder="Enter your age" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group animate-fade-in delay-3">
+              <label class="form-label">
+                <i class="bi bi-lock"></i> Password
+              </label>
+              <div class="input-group">
+                <i class="bi bi-lock input-icon"></i>
+                <input type="password" name="password" class="form-control" placeholder="Create password" required>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group animate-fade-in delay-3">
+              <label class="form-label">
+                <i class="bi bi-lock-fill"></i> Confirm Password
+              </label>
+              <div class="input-group">
+                <i class="bi bi-lock-fill input-icon"></i>
+                <input type="password" name="confirm" class="form-control" placeholder="Confirm password" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Disease Section -->
+        <div class="disease-section animate-fade-in delay-4">
+          <div class="disease-header">
+            <i class="bi bi-heart-pulse"></i>
+            <h5>Health Information (Optional)</h5>
+          </div>
+          <p class="text-muted mb-3">Add any respiratory conditions or health concerns (up to 5)</p>
+          
+          <div id="diseaseList"></div>
+          
+          <button type="button" id="addDisease" class="btn btn-outline-primary btn-sm mt-2">
+            <i class="bi bi-plus-circle"></i> Add Disease
+          </button>
+          
+          <div class="disease-count">
+            <span id="diseaseCounter">0</span>/5 diseases added
+          </div>
+        </div>
+
+        <!-- Hidden field to collect all diseases -->
+        <input type="hidden" name="diseases" id="diseasesInput">
+
+        <button class="btn btn-success w-100 mb-3 animate-fade-in delay-4">
+          <i class="bi bi-person-plus"></i> Create Account
+        </button>
+      </form>
+
+      <div class="login-link animate-fade-in delay-4">
+        <a href="{{ url_for('login') }}">
+          <i class="bi bi-box-arrow-in-right"></i> Already have an account? Login
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const addBtn = document.getElementById('addDisease');
+    const list = document.getElementById('diseaseList');
+    const hiddenInput = document.getElementById('diseasesInput');
+    const counter = document.getElementById('diseaseCounter');
+    let count = 0;
+
+    function updateHidden() {
+      const diseases = Array.from(list.querySelectorAll('input[name="diseaseItem"]'))
+                            .map(input => input.value.trim())
+                            .filter(v => v);
+      hiddenInput.value = JSON.stringify(diseases);
+      counter.textContent = diseases.length;
+    }
+
+    function createDiseaseItem(value = '') {
+      const div = document.createElement('div');
+      div.className = 'disease-item';
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.name = 'diseaseItem';
+      input.className = 'form-control';
+      input.value = value;
+      input.placeholder = 'Enter disease name (e.g., Asthma, Allergies)';
+      input.addEventListener('input', updateHidden);
+
+      const buttonsDiv = document.createElement('div');
+      buttonsDiv.className = 'disease-buttons d-flex gap-1';
+
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button';
+      editBtn.className = 'btn btn-warning btn-sm';
+      editBtn.innerHTML = '<i class="bi bi-pencil"></i>';
+      editBtn.title = 'Edit';
+      editBtn.addEventListener('click', () => input.focus());
+
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'btn btn-danger btn-sm';
+      delBtn.innerHTML = '<i class="bi bi-trash"></i>';
+      delBtn.title = 'Delete';
+      delBtn.addEventListener('click', () => {
+        list.removeChild(div);
+        count--;
+        updateHidden();
+      });
+
+      buttonsDiv.append(editBtn, delBtn);
+      div.append(input, buttonsDiv);
+      return div;
+    }
+
+    addBtn.addEventListener('click', () => {
+      if (count >= 5) {
+        alert("You can only add up to 5 diseases.");
+        return;
+      }
+      const newItem = createDiseaseItem();
+      list.appendChild(newItem);
+      count++;
+      updateHidden();
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      updateHidden();
+      // Form validation would go here
+    });
+
+    // Initialize counter
+    updateHidden();
+  </script>
+</body>
+</html>

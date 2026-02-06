@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Email Configuration</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+  <div class="container mt-5" style="max-width:700px;">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h4>Email Configuration</h4>
+      </div>
+      <div class="card-body">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert alert-info">{% for m in messages %}{{ m }}{% endfor %}</div>
+          {% endif %}
+        {% endwith %}
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">SendGrid API Key (optional)</label>
+            <input type="text" name="SENDGRID_API_KEY" class="form-control" value="{{ cfg.SENDGRID_API_KEY or '' }}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">SMTP Server (optional)</label>
+            <input type="text" name="SMTP_SERVER" class="form-control" value="{{ cfg.SMTP_SERVER or '' }}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">SMTP Port</label>
+            <input type="text" name="SMTP_PORT" class="form-control" value="{{ cfg.SMTP_PORT or '587' }}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">SMTP User</label>
+            <input type="text" name="SMTP_USER" class="form-control" value="{{ cfg.SMTP_USER or '' }}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">SMTP Pass</label>
+            <input type="password" name="SMTP_PASS" class="form-control" value="{{ cfg.SMTP_PASS or '' }}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">From Email</label>
+            <input type="email" name="ALERT_FROM_EMAIL" class="form-control" value="{{ cfg.ALERT_FROM_EMAIL or '' }}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">To Email</label>
+            <input type="email" name="ALERT_TO_EMAIL" class="form-control" value="{{ cfg.ALERT_TO_EMAIL or '' }}">
+          </div>
+          <button class="btn btn-primary">Save</button>
+          <a href="{{ url_for('dashboard') }}" class="btn btn-secondary ms-2">Back</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

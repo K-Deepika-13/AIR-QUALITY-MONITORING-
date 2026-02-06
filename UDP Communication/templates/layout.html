@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>AirQuality Dashboard</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0; background:#f6f8fa; color:#111; }
+      header { background:#1f6feb; color:white; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; }
+      .container { padding:20px; max-width:1000px; margin:20px auto; }
+      .card { background:white; border-radius:8px; padding:16px; box-shadow:0 4px 12px rgba(0,0,0,0.06); margin-bottom:16px; }
+      .inline { display:flex; gap:12px; align-items:center; }
+      .badge { background:#eef6ff; color:#1f6feb; padding:6px 10px; border-radius:999px; font-weight:600; }
+      .error { color:#b00020; }
+      .success { color: #0a7a3f; }
+      .btn { background:#1f6feb; color:white; padding:8px 12px; border-radius:6px; text-decoration:none; }
+      input, select, textarea { padding:8px; width:100%; box-sizing:border-box; margin-top:6px; margin-bottom:10px; }
+      table { width:100%; border-collapse:collapse; }
+      th, td { padding:8px; border-bottom:1px solid #eee; text-align:left; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div><strong>AirQuality Dashboard</strong></div>
+      <div>
+        {% if session.user_id %}
+          <a href="{{ url_for('dashboard') }}" style="color:white; margin-right:12px;">Dashboard</a>
+          <a href="{{ url_for('profile') }}" style="color:white; margin-right:12px;">Profile</a>
+          <a href="{{ url_for('logout') }}" style="color:white;">Logout</a>
+        {% else %}
+          <a href="{{ url_for('login') }}" style="color:white; margin-right:12px;">Login</a>
+          <a href="{{ url_for('register') }}" style="color:white;">Register</a>
+        {% endif %}
+      </div>
+    </header>
+    <div class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="card">
+            {% for category, msg in messages %}
+              <div class="{{ category }}">{{ msg }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>
